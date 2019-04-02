@@ -21,7 +21,7 @@ public:
         Texture();
         ~Texture();
         bool import(SDL_Renderer* renderer, std::string path);
-        bool import(SDL_Renderer* renderer, std::string text, std::string path, int size, SDL_Color c);
+        bool import(SDL_Renderer* renderer, std::string text, TTF_Font* font, SDL_Color c);
         void free();
         SDL_Texture* getImage() const;
         int getWidth() const;
@@ -44,6 +44,7 @@ public:
     void setRenderDrawColor(int r, int g, int b);
     void fillRect(int x, int y, int width, int height);
     void renderTexture(std::string key, int x, int y);
+    void renderText(std::string text, std::string fontKey, int x, int y);
 
     int getScreenWidth() const;
     int getScreenHeight() const;
@@ -56,6 +57,7 @@ private:
     int SCREEN_HEIGHT;
     bool isFullscreen;
 
+    TTF_Font* font_regular;
     Texture* textures;
     std::string* textureKeys;
     int noTextures;

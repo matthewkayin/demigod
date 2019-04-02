@@ -55,7 +55,12 @@ bool Engine::init(std::string title, int width, int height){
     }
 
     SDL_ShowCursor(SDL_DISABLE);
-    loadTextures();
+    if(!loadTextures()){
+
+        return false;
+    }
+
+    font_regular = TTF_OpenFont("res/helvetica.ttf", 18);
 
     return true;
 }
@@ -66,8 +71,13 @@ bool Engine::loadTextures(){
     textures = new Texture[noTextures];
     textureKeys = new std::string[noTextures];
 
-    textures[0].import(renderer, "res/gfx/player.png");
+    if(!textures[0].import(renderer, "res/gfx/player.png")){
+
+        return false;
+    }
     textureKeys[0] = "player";
+
+    return true;
 }
 
 void Engine::toggleFullscreen(){
@@ -150,6 +160,20 @@ void Engine::renderTexture(std::string key, int x, int y){
     SDL_RenderCopy(renderer, toDraw, &srcsRect, &dstRect);
 }
 
+void Engine::renderText(std::string text, std::string fontKey, int x, int y){
+
+    Texture toDraw;
+    TTF_Font* fontToUse = nullptr;
+    if(fontKey == "regular"){
+
+        fontToUse = font_regular;
+    }
+    toDraw.import(renderer, text, fontToUse, SDL_Color{255, 255, 255, 255});
+    SDL_Rect srcsRect = SDL_Rect{0, 0, toDraw.getWidth(), toDraw.getHeight()};
+    SDL_Rect dstRect = SDL_Rect{x, y, toDraw.getWidth(), toDraw.getHeight()};
+    SDL_RenderCopy(renderer, toDraw.getImage(), &srcsRect, &dstRect);
+}
+
 Engine::Texture::Texture(){
 
     image = nullptr;
@@ -191,18 +215,11 @@ bool Engine::Texture::import(SDL_Renderer* renderer, std::string path){
     return image != nullptr;
 }
 
-bool Engine::Texture::import(SDL_Renderer* renderer, std::string text, std::string path, int size, SDL_Color c){
+bool Engine::Texture::import(SDL_Renderer* renderer, std::string text, TTF_Font* font, SDL_Color c){
 
     free();
-    TTF_Font* font = TTF_OpenFont(path.c_str(), size);
     SDL_Texture* newTexture = nullptr;
     SDL_Surface* textSurface = nullptr;
-
-    if(font == nullptr){
-
-        std::cout << "Failed to load font! SDL Error: " << SDL_GetError() << std::endl;
-        return false;
-    }
 
     textSurface = TTF_RenderText_Solid(font, text.c_str(), c);
 
@@ -223,7 +240,6 @@ bool Engine::Texture::import(SDL_Renderer* renderer, std::string text, std::stri
         return false;
     }
 
-    TTF_CloseFont(font);
     SDL_FreeSurface(textSurface);
 
     image = newTexture;
