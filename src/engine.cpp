@@ -4,6 +4,7 @@ Engine::Engine(){
 
     window = nullptr;
     renderer = nullptr;
+    isFullscreen = false;
 }
 
 Engine::~Engine(){
@@ -54,13 +55,14 @@ bool Engine::init(std::string title, int width, int height){
         return false;
     }
 
-    SDL_ShowCursor(SDL_DISABLE);
     if(!loadTextures()){
 
         return false;
     }
 
     font_regular = TTF_OpenFont("res/helvetica.ttf", 18);
+    font_title = TTF_OpenFont("res/helvetica.ttf", 90);
+    font_menu = TTF_OpenFont("res/helvetica.ttf", 30);
 
     return true;
 }
@@ -132,10 +134,15 @@ void Engine::fillRect(int x, int y, int width, int height){
 
 void Engine::renderTexture(std::string key, int x, int y){
 
+    //srcsRect is the portion of the image to take from
+    //dstRect is what to draw on the screen
+    //So srcs rect could be used to take all of or part of an image
+    //And dst rect could be used to position where we draw the image and how much we ought to scale it by
     SDL_Texture* toDraw = nullptr;
     SDL_Rect srcsRect;
     SDL_Rect dstRect;
 
+    //Select a texture based on the given key, they're stored in parallel arrays
     for(int i = 0; i < noTextures; i++){
 
         if(textureKeys[i] == key){
@@ -162,15 +169,40 @@ void Engine::renderTexture(std::string key, int x, int y){
 
 void Engine::renderText(std::string text, std::string fontKey, int x, int y){
 
+    //First we need to create a texture based on the text and given font
     Texture toDraw;
     TTF_Font* fontToUse = nullptr;
     if(fontKey == "regular"){
 
         fontToUse = font_regular;
+
+    }else if(fontKey == "title"){
+
+        fontToUse = font_title;
+
+    }else if(fontKey == "menu"){
+
+        fontToUse = font_menu;
     }
-    toDraw.import(renderer, text, fontToUse, SDL_Color{255, 255, 255, 255});
+    SDL_Color c;
+    SDL_GetRenderDrawColor(renderer, &c.r, &c.g, &c.b, &c.a);
+    toDraw.import(renderer, text, fontToUse, c);
+
+    //If x or y are -1, center the text horizontally or vertically
+    int theX = x;
+    int theY = y;
+    if(theX == -1){
+
+        theX = (SCREEN_WIDTH / 2) - (toDraw.getWidth() / 2);
+    }
+    if(theY == -1){
+
+        theY = (SCREEN_HEIGHT / 2) - (toDraw.getHeight() / 2);
+    }
+
+    //Now we can do the actual rendering
     SDL_Rect srcsRect = SDL_Rect{0, 0, toDraw.getWidth(), toDraw.getHeight()};
-    SDL_Rect dstRect = SDL_Rect{x, y, toDraw.getWidth(), toDraw.getHeight()};
+    SDL_Rect dstRect = SDL_Rect{theX, theY, toDraw.getWidth(), toDraw.getHeight()};
     SDL_RenderCopy(renderer, toDraw.getImage(), &srcsRect, &dstRect);
 }
 
