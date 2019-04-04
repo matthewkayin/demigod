@@ -4,7 +4,7 @@
 #include "engine.hpp"
 
 void start();
-
+void keyPressed(int key); //a function to actually do something with inputs once received to make the code a bit cleaner
 void update();
 void input();
 void render();
@@ -19,12 +19,24 @@ int gamestate = 0;
 bool renderFPS = true;
 
 //key locks so that events only happen once per keypress
-bool f11Lock = false;
-bool f2Lock = false;
+const int noKeys = 6;
+bool keyLock[noKeys];
+const SDL_Keycode keyCode[noKeys] = {SDLK_F11, SDLK_F2, SDLK_a, SDLK_b, SDLK_c, SDLK_d};
+const int F11 = 0;
+const int F2 = 1;
+const int A = 2;
+const int B = 3;
+const int C = 4;
+const int D = 5;
 
 int main(){
 
     running = engine.init("demigod", 1280, 720);
+
+    for(int i = 0; i < noKeys; i++){
+
+        keyLock[i] = false;
+    }
 
     start();
 
@@ -79,43 +91,83 @@ void input(){
 
         if(e.type == SDL_KEYDOWN){
 
-            switch(e.key.keysym.sym){
+            SDL_Keycode key = e.key.keysym.sym;
+            for(int i = 0; i < noKeys; i++){
 
-                case SDLK_F11:
-                    if(!f11Lock){
+                if(keyCode[i] == key){
 
-                        engine.toggleFullscreen();
-                        f11Lock = true;
+                    if(!keyLock[i]){
+
+                        keyPressed(i);
+                        keyLock[i] = true;
                     }
+
                     break;
-
-                case SDLK_F2:
-                    if(!f2Lock){
-
-                        renderFPS = !renderFPS; //toggle the variable
-                        f2Lock = true;
-                    }
+                }
             }
 
         }else if(e.type == SDL_KEYUP){
 
-            switch(e.key.keysym.sym){
+            SDL_Keycode key = e.key.keysym.sym;
+            for(int i = 0; i < noKeys; i++){
 
-                case SDLK_F11:
-                    if(f11Lock){
+                if(keyCode[i] == key){
 
-                        f11Lock = false;
+                    if(keyLock[i]){
+
+                        keyLock[i] = false;
                     }
-                    break;
 
-                case SDLK_F2:
-                    if(f2Lock){
-
-                        f2Lock = false;
-                    }
                     break;
+                }
             }
         }
+    }
+}
+
+void keyPressed(int key){
+
+    switch(key){
+
+        case F11:
+            engine.toggleFullscreen();
+            break;
+
+        case F2:
+            renderFPS = !renderFPS;
+            break;
+
+        case A:
+            if(gamestate == 0){
+
+                gamestate = 1;
+            }
+            break;
+
+        case B:
+            if(gamestate == 0){
+
+                gamestate = 2;
+            }
+            break;
+
+        case C:
+            if(gamestate == 0){
+
+                gamestate = 3;
+            }
+            break;
+
+        case D:
+            if(gamestate == 0){
+
+                running = false;
+            }
+            break;
+
+        default:
+            std::cout << "invalid key sent to keyPressed!" << std::endl;
+            break;
     }
 }
 
