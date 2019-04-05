@@ -9,8 +9,6 @@ void start();
 void keyPressed(int key); //a function to actually do something with inputs once received to make the code a bit cleaner
 void input();
 
-void update();
-
 void render();
 void renderLevel();
 void renderEntity(Entity e);
@@ -26,15 +24,23 @@ int gamestate = 0;
 bool renderFPS = true;
 
 //key locks so that events only happen once per keypress
-const int noKeys = 6;
+const int noKeys = 10;
 bool keyLock[noKeys];
-const SDL_Keycode keyCode[noKeys] = {SDLK_F11, SDLK_F2, SDLK_a, SDLK_b, SDLK_c, SDLK_d};
-const int F11 = 0;
-const int F2 = 1;
-const int A = 2;
-const int B = 3;
-const int C = 4;
-const int D = 5;
+const SDL_Keycode keyCode[noKeys] = {SDLK_F11, SDLK_F2, SDLK_a, SDLK_b, SDLK_c, SDLK_d,
+                                    SDLK_UP, SDLK_RIGHT, SDLK_DOWN, SDLK_LEFT};
+enum Keys{
+
+    F11 = 0,
+    F2 = 1,
+    A = 2,
+    B = 3,
+    C = 4,
+    D = 5,
+    UP = 6,
+    RIGHT = 7,
+    DOWN = 8,
+    LEFT = 9
+};
 
 //game state enumeration for cleaner code
 const int MENU_TITLE = 0;
@@ -63,7 +69,6 @@ int main(){
     while(running){
 
         input();
-        update();
         render();
         frames++;
 
@@ -180,15 +185,38 @@ void keyPressed(int key){
             }
             break;
 
+        case UP:
+            if(gamestate == GAME){
+
+                level.handleInput(level.UP);
+            }
+            break;
+
+        case RIGHT:
+            if(gamestate == GAME){
+
+                level.handleInput(level.RIGHT);
+            }
+            break;
+
+        case DOWN:
+            if(gamestate == GAME){
+
+                level.handleInput(level.DOWN);
+            }
+            break;
+
+        case LEFT:
+            if(gamestate == GAME){
+
+                level.handleInput(level.LEFT);
+            }
+            break;
+
         default:
             std::cout << "Invalid key sent to keyPressed!" << std::endl;
             break;
     }
-}
-
-void update(){
-
-
 }
 
 void render(){

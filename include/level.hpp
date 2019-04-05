@@ -11,8 +11,19 @@
 class Level{
 
 public:
+
     Level();
     ~Level();
+
+    //Input functions and constants
+    enum Inputs{
+
+        UP = 0,
+        RIGHT = 1,
+        DOWN = 2,
+        LEFT = 3
+    };
+    void handleInput(const int inputCode);
 
     void loadMap(const int *prebuilt, const int w, const int h); //loads a non-procedurally generated map
 

@@ -16,6 +16,43 @@ Level::~Level(){
     delete map;
 }
 
+void Level::handleInput(const int inputCode){
+
+    bool invokesPlayerTurn = false;
+
+    switch(inputCode){
+
+        case UP:
+            player.incY(-1);
+            invokesPlayerTurn = true;
+            break;
+
+        case RIGHT:
+            player.incX(1);
+            invokesPlayerTurn = true;
+            break;
+
+        case DOWN:
+            player.incY(1);
+            invokesPlayerTurn = true;
+            break;
+
+        case LEFT:
+            player.incX(-1);
+            invokesPlayerTurn = true;
+            break;
+
+        default:
+            std::cout << "Invalid level input code!" << std::endl;
+            break;
+    }
+
+    if(invokesPlayerTurn){
+
+        //update()
+    }
+}
+
 void Level::loadMap(const int *prebuilt, const int w, const int h){
 
     mapWidth = w;
