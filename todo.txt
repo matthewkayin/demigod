@@ -1,0 +1,27 @@
+So I realized that there's a lot that needs to go into this game so let's make a todo list
+
+TODO
+------
+Menu
+    -Character log
+    -Credits
+    -Character creation
+    -In-Game Menu
+Mapping
+    -Procedurally generating maps
+    -Make any static maps
+    -Make map offsets
+Enemies
+    -Make enemies and the AI
+    -Random enemy spawning
+Items
+    -Player inventory
+    -Chests
+    -Enemy item drops
+Player
+    -Combat
+    -Equipment
+    -Stats
+    -Limb system?
+    -Power
+Story
