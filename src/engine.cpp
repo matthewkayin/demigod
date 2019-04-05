@@ -69,7 +69,7 @@ bool Engine::init(std::string title, int width, int height){
 
 bool Engine::loadTextures(){
 
-    noTextures = 1;
+    noTextures = 2;
     textures = new Texture[noTextures];
     textureKeys = new std::string[noTextures];
 
@@ -78,6 +78,12 @@ bool Engine::loadTextures(){
         return false;
     }
     textureKeys[0] = "player";
+
+    if(!textures[1].import(renderer, "res/gfx/tileset.png")){
+
+        return false;
+    }
+    textureKeys[1] = "tileset";
 
     return true;
 }
@@ -162,6 +168,42 @@ void Engine::renderTexture(std::string key, int x, int y){
     if(toDraw == nullptr){
 
         std::cout << "Failed to fetch texture! " << std::endl;
+        return;
+    }
+
+    SDL_RenderCopy(renderer, toDraw, &srcsRect, &dstRect);
+}
+
+void Engine::renderPart(std::string key, int index, int x, int y){
+
+    SDL_Texture* toDraw = nullptr;
+    SDL_Rect srcsRect;
+    SDL_Rect dstRect;
+
+    for(int i = 0; i < noTextures; i++){
+
+        if(textureKeys[i] == key){
+
+            toDraw = textures[i].getImage();
+            //This function assumes it's being used with a tilemap of 32x32 textures
+            int sx = index % (textures[i].getWidth() / 32);
+            int sy = (index - sx) / (textures[i].getWidth() / 32);
+
+            srcsRect.x = (sx * 32);
+            srcsRect.y = (sy * 32);
+            srcsRect.w = 32;
+            srcsRect.h = 32;
+            dstRect.x = x;
+            dstRect.y = y;
+            dstRect.w = 32;
+            dstRect.h = 32;
+        }
+    }
+
+    if(toDraw == nullptr){
+
+        std::cout << "Failed to fetch texture!" << std::endl;
+        return;
     }
 
     SDL_RenderCopy(renderer, toDraw, &srcsRect, &dstRect);

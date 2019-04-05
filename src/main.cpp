@@ -2,14 +2,20 @@
 //main.cpp
 
 #include "engine.hpp"
+#include "level.hpp"
 
 void start();
+
 void keyPressed(int key); //a function to actually do something with inputs once received to make the code a bit cleaner
-void update();
 void input();
+
+void update();
+
 void render();
+void renderLevel();
 
 Engine engine;
+Level level;
 bool running = true;
 const unsigned int TARGET_FPS = 60;
 const unsigned int SECOND = 1000;
@@ -28,6 +34,13 @@ const int A = 2;
 const int B = 3;
 const int C = 4;
 const int D = 5;
+
+//game state enumeration for cleaner code
+const int MENU_TITLE = 0;
+const int MENU_CHAR_CREATE = 1;
+const int MENU_CHAR_HISTORY = 2;
+const int MENU_CREDITS = 3;
+const int GAME = 4;
 
 int main(){
 
@@ -138,35 +151,36 @@ void keyPressed(int key){
             break;
 
         case A:
-            if(gamestate == 0){
+            if(gamestate == MENU_TITLE){
 
-                gamestate = 1;
+                //gamestate = MENU_CHAR_CREATE;
+                gamestate = GAME;
             }
             break;
 
         case B:
-            if(gamestate == 0){
+            if(gamestate == MENU_TITLE){
 
-                gamestate = 2;
+                gamestate = MENU_CHAR_HISTORY;
             }
             break;
 
         case C:
-            if(gamestate == 0){
+            if(gamestate == MENU_TITLE){
 
-                gamestate = 3;
+                gamestate = MENU_CREDITS;
             }
             break;
 
         case D:
-            if(gamestate == 0){
+            if(gamestate == MENU_TITLE){
 
                 running = false;
             }
             break;
 
         default:
-            std::cout << "invalid key sent to keyPressed!" << std::endl;
+            std::cout << "Invalid key sent to keyPressed!" << std::endl;
             break;
     }
 }
@@ -181,7 +195,7 @@ void render(){
     engine.setRenderDrawColor(0, 0, 0);
     engine.clear();
 
-    if(gamestate == 0){
+    if(gamestate == MENU_TITLE){
 
         //Render title menu
         engine.setRenderDrawColor(255, 255, 255);
@@ -190,6 +204,10 @@ void render(){
         engine.renderText("b. Past Runs", "menu", -1, 400);
         engine.renderText("c. Credits", "menu", -1, 450);
         engine.renderText("d. Exit", "menu", -1, 500);
+
+    }else if(gamestate == GAME){
+
+        renderLevel();
     }
 
     if(renderFPS){
@@ -199,4 +217,15 @@ void render(){
     }
 
     engine.render();
+}
+
+void renderLevel(){
+
+    for(int i = 0; i < level.getMapWidth(); i++){
+
+        for(int j = 0; j < level.getMapHeight(); j++){
+
+            engine.renderPart("tileset", level.getTile(i, j), i * 32, j * 32);
+        }
+    }
 }

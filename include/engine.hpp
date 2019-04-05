@@ -45,6 +45,7 @@ public:
     void setRenderDrawColor(int r, int g, int b);
     void fillRect(int x, int y, int width, int height); //draw a filled rectangle
     void renderTexture(std::string key, int x, int y); //draw the texture associated with the given key
+    void renderPart(std::string key, int index, int x, int y); //draw a sub-image of a texture
     void renderText(std::string text, std::string fontKey, int x, int y); //draw the string in the font associated with the given key. If x and y are -1, center horizontally or vertically
 
     int getScreenWidth() const;
