@@ -5,6 +5,7 @@
 #ifndef LEVEL_H
 #define LEVEL_H
 
+#include "entity.hpp"
 #include <iostream>
 
 class Level{
@@ -20,11 +21,14 @@ public:
     int getNoTiles() const;
     int getMapWidth() const;
     int getMapHeight() const;
+
+    Entity getPlayer() const;
 private:
     int *map;
     int mapWidth;
     int mapHeight;
 
+    Entity player;
     const int dummy[30] = {1, 1, 1, 1, 1, 1,
                          1, 0, 0, 0, 0, 1,
                          1, 0, 0, 0, 0, 1,

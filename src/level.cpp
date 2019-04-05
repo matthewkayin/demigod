@@ -7,6 +7,8 @@ Level::Level(){
     map = nullptr;
 
     loadMap(dummy, 6, 5);
+    player.setPos(2, 2);
+    player.setImage("player");
 }
 
 Level::~Level(){
@@ -57,4 +59,9 @@ int Level::getMapWidth() const{
 int Level::getMapHeight() const{
 
     return mapHeight;
+}
+
+Entity Level::getPlayer() const{
+
+    return player;
 }

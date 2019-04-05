@@ -13,6 +13,7 @@ void update();
 
 void render();
 void renderLevel();
+void renderEntity(Entity e);
 
 Engine engine;
 Level level;
@@ -208,6 +209,7 @@ void render(){
     }else if(gamestate == GAME){
 
         renderLevel();
+        renderEntity(level.getPlayer());
     }
 
     if(renderFPS){
@@ -228,4 +230,9 @@ void renderLevel(){
             engine.renderPart("tileset", level.getTile(i, j), i * 32, j * 32);
         }
     }
+}
+
+void renderEntity(Entity e){
+
+    engine.renderTexture(e.getImage(), e.getX() * 32, e.getY() * 32);
 }
