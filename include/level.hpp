@@ -6,7 +6,10 @@
 #define LEVEL_H
 
 #include "entity.hpp"
+#include "raqueue.hpp"
 #include <iostream>
+#include <string>
+#include <queue>
 
 class Level{
 
@@ -24,6 +27,9 @@ public:
         LEFT = 3
     };
     void handleInput(const int inputCode);
+    void enterMessage(std::string message);
+    std::string getMessages(int index);
+    int getNoMessages();
 
     void loadMap(const int *prebuilt, const int w, const int h); //loads a non-procedurally generated map
 
@@ -38,6 +44,8 @@ private:
     int *map;
     int mapWidth;
     int mapHeight;
+
+    Raqueue messages;
 
     Entity player;
     const int dummy[30] = {1, 1, 1, 1, 1, 1,

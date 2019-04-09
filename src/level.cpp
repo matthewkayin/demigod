@@ -9,6 +9,16 @@ Level::Level(){
     loadMap(dummy, 6, 5);
     player.setPos(2, 2);
     player.setImage("player");
+    messages.init(8);
+    messages.push("hello friends it me");
+    messages.push("hello friends #it# me");
+    messages.push("rest in peace everyone");
+    messages.push("asd;flkjasdf;klj");
+    messages.push("test test test test test");
+    messages.push("I need four more messages to write");
+    messages.push("three more messages to go");
+    messages.push("two more to do things and stuff");
+    messages.push("bro this dude got me like smh");
 }
 
 Level::~Level(){
@@ -51,6 +61,21 @@ void Level::handleInput(const int inputCode){
 
         //update()
     }
+}
+
+void Level::enterMessage(std::string message){
+
+    messages.push(message);
+}
+
+std::string Level::getMessages(int index){
+
+    return messages.at(index);
+}
+
+int Level::getNoMessages(){
+
+    return messages.size();
 }
 
 void Level::loadMap(const int *prebuilt, const int w, const int h){

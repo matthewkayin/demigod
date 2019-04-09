@@ -12,6 +12,7 @@ void input();
 void render();
 void renderLevel();
 void renderEntity(Entity e);
+void renderGameUI();
 
 Engine engine;
 Level level;
@@ -22,6 +23,10 @@ const unsigned int FRAME_TIME = SECOND / TARGET_FPS;
 int fps = 0;
 int gamestate = 0;
 bool renderFPS = true;
+
+//variables for when we're rendering only onto specific frames of the UI
+const int MAIN_FRAME_X = 24;
+const int MAIN_FRAME_Y = 28;
 
 //key locks so that events only happen once per keypress
 const int noKeys = 10;
@@ -228,22 +233,23 @@ void render(){
 
         //Render title menu
         engine.setRenderDrawColor(255, 255, 255);
-        engine.renderText("DEMIGOD", "title", -1, 50);
-        engine.renderText("a. Start", "menu", -1, 350);
-        engine.renderText("b. Past Runs", "menu", -1, 400);
-        engine.renderText("c. Credits", "menu", -1, 450);
-        engine.renderText("d. Exit", "menu", -1, 500);
+        engine.renderText("DEMIGOD", -1, 50, 90);
+        engine.renderText("a. Start", -1, 350, 30);
+        engine.renderText("b. Past Runs", -1, 400, 30);
+        engine.renderText("c. Credits", -1, 450, 30);
+        engine.renderText("d. Exit", -1, 500, 30);
 
     }else if(gamestate == GAME){
 
         renderLevel();
-        renderEntity(level.getPlayer());
+        //renderEntity(level.getPlayer());
+        renderGameUI();
     }
 
     if(renderFPS){
 
         engine.setRenderDrawColor(255, 0, 0);
-        engine.renderText("FPS: " + std::to_string(fps), "regular", 5, 5);
+        engine.renderText("FPS: " + std::to_string(fps), 5, 5, 18);
     }
 
     engine.render();
@@ -255,7 +261,8 @@ void renderLevel(){
 
         for(int j = 0; j < level.getMapHeight(); j++){
 
-            engine.renderPart("tileset", level.getTile(i, j), i * 32, j * 32);
+            //TODO, make it so that if tile is going past the width/height of the main frame that we only render part of it
+            engine.renderPart("tileset", level.getTile(i, j), MAIN_FRAME_X + (i * 32), MAIN_FRAME_Y + (j * 32));
         }
     }
 }
@@ -263,4 +270,16 @@ void renderLevel(){
 void renderEntity(Entity e){
 
     engine.renderTexture(e.getImage(), e.getX() * 32, e.getY() * 32);
+}
+
+void renderGameUI(){
+
+    engine.setRenderDrawColor(255, 255, 255);
+    engine.drawRect(20, 24, 1032, 500, 4);
+    engine.drawRect(20, 560, 1032, 140, 4);
+    engine.renderText("Player", 20, 530, 25);
+    for(int i = 0; i < level.getNoMessages(); i++){
+
+        engine.renderConsoleMessage(level.getMessages(i), 26, 568 + (i * 16));
+    }
 }

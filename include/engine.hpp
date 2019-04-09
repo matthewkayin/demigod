@@ -11,6 +11,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <iostream>
 #include <string>
+#include <vector>
 
 class Engine{
 
@@ -43,10 +44,13 @@ public:
     void clear(); //clear the screen of the previous frame
     void render(); //flip everything we've drawn so that it is visible
     void setRenderDrawColor(int r, int g, int b);
+    void drawRect(int x, int y, int width, int height); //draw an un-filled rectangle
+    void drawRect(int x, int y, int width, int height, int thickness); //draw a rectangle with a specified thickness
     void fillRect(int x, int y, int width, int height); //draw a filled rectangle
     void renderTexture(std::string key, int x, int y); //draw the texture associated with the given key
     void renderPart(std::string key, int index, int x, int y); //draw a sub-image of a texture
-    void renderText(std::string text, std::string fontKey, int x, int y); //draw the string in the font associated with the given key. If x and y are -1, center horizontally or vertically
+    void renderText(std::string text, int x, int y, int size); //draw the string in the font associated with the given key. If x and y are -1, center horizontally or vertically
+    void renderConsoleMessage(std::string message, int x, int y);
 
     int getScreenWidth() const;
     int getScreenHeight() const;
@@ -60,10 +64,10 @@ private:
     bool isFullscreen;
 
     //Texture and font variables
-    //Different fonts are only for different font heights
-    TTF_Font* font_regular;
-    TTF_Font* font_menu;
-    TTF_Font* font_title;
+    const int MESSAGE_SIZE = 16; //font size for console messages
+    std::vector<TTF_Font*> fonts;
+    std::vector<int> fontSizes;
+    int noFonts;
     Texture* textures;
     std::string* textureKeys;
     int noTextures;

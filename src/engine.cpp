@@ -60,10 +60,6 @@ bool Engine::init(std::string title, int width, int height){
         return false;
     }
 
-    font_regular = TTF_OpenFont("res/helvetica.ttf", 18);
-    font_title = TTF_OpenFont("res/helvetica.ttf", 90);
-    font_menu = TTF_OpenFont("res/helvetica.ttf", 30);
-
     return true;
 }
 
@@ -125,6 +121,26 @@ void Engine::render(){
 void Engine::setRenderDrawColor(int r, int g, int b){
 
     SDL_SetRenderDrawColor(renderer, r, g, b, 255);
+}
+
+void Engine::drawRect(int x, int y, int width, int height){
+
+    SDL_Rect rect;
+    rect.x = x;
+    rect. y = y;
+    rect.w = width;
+    rect.h = height;
+
+    SDL_RenderDrawRect(renderer, &rect);
+}
+
+void Engine::drawRect(int x, int y, int width, int height, int thickness){
+
+    //To accomplish the thickness effect, draw a series of one pixel smaller rectangles
+    for(int i = 0; i < thickness; i++){
+
+        drawRect(x + i, y + i, width - (i*2), height - (i*2));
+    }
 }
 
 void Engine::fillRect(int x, int y, int width, int height){
@@ -209,25 +225,37 @@ void Engine::renderPart(std::string key, int index, int x, int y){
     SDL_RenderCopy(renderer, toDraw, &srcsRect, &dstRect);
 }
 
-void Engine::renderText(std::string text, std::string fontKey, int x, int y){
+void Engine::renderText(std::string text, int x, int y, int size){
 
     //First we need to create a texture based on the text and given font
     Texture toDraw;
     TTF_Font* fontToUse = nullptr;
-    if(fontKey == "regular"){
+    if(fonts.size() != 0){
 
-        fontToUse = font_regular;
+        //unsigned int in the for loop to prevent warnings when comparing to std::vector.size()
+        for(unsigned int i = 0; i < fonts.size(); i++){
 
-    }else if(fontKey == "title"){
+            if(fontSizes.at(i) == size){
 
-        fontToUse = font_title;
-
-    }else if(fontKey == "menu"){
-
-        fontToUse = font_menu;
+                fontToUse = fonts.at(i);
+            }
+        }
     }
+
+    //If font vector is empty or if font of given size is not found, create new font and add to vector
+    if(fontToUse == nullptr){
+
+        TTF_Font* font = TTF_OpenFont("res/letter_gothic.ttf", size);
+        fonts.push_back(font);
+        fontSizes.push_back(size);
+        fontToUse = font;
+    }
+
+    //Set the rendering color equal to the current SDL render color
     SDL_Color c;
     SDL_GetRenderDrawColor(renderer, &c.r, &c.g, &c.b, &c.a);
+
+    //Import the texture
     toDraw.import(renderer, text, fontToUse, c);
 
     //If x or y are -1, center the text horizontally or vertically
@@ -246,6 +274,50 @@ void Engine::renderText(std::string text, std::string fontKey, int x, int y){
     SDL_Rect srcsRect = SDL_Rect{0, 0, toDraw.getWidth(), toDraw.getHeight()};
     SDL_Rect dstRect = SDL_Rect{theX, theY, toDraw.getWidth(), toDraw.getHeight()};
     SDL_RenderCopy(renderer, toDraw.getImage(), &srcsRect, &dstRect);
+}
+
+void Engine::renderConsoleMessage(std::string message, int x, int y){
+
+    //algorithm idea for this - what if we just go character by character?
+    //If there are no string rendering commands
+    if(message.find("#") == std::string::npos){
+
+        setRenderDrawColor(255, 255, 255);
+        renderText(message, x, y, MESSAGE_SIZE);
+
+    }else{
+
+        std::string white = "";
+        std::string red = "";
+
+        bool colorIsWhite = true;
+        //unsigned int to avoid warning when comparing with message.length()
+        for(unsigned int i = 0; i < message.length(); i++){
+
+            if(message[i] == '#'){
+
+                colorIsWhite = !colorIsWhite;
+
+            }else{
+
+                if(colorIsWhite){
+
+                    white = white + message[i];
+                    red = red + " ";
+
+                }else{
+
+                    white = white + " ";
+                    red = red + message[i];
+                }
+            }
+        }
+
+        setRenderDrawColor(255, 255, 255);
+        renderText(white, x, y, MESSAGE_SIZE);
+        setRenderDrawColor(255, 0, 0);
+        renderText(red, x, y, MESSAGE_SIZE);
+    }
 }
 
 Engine::Texture::Texture(){
