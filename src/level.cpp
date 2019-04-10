@@ -9,16 +9,17 @@ Level::Level(){
     loadMap(dummy, 6, 5);
     player.setPos(2, 2);
     player.setImage("player");
-    messages.init(8);
-    messages.push("hello friends it me");
-    messages.push("hello friends #it# me");
-    messages.push("rest in peace everyone");
-    messages.push("asd;flkjasdf;klj");
-    messages.push("test test test test test");
-    messages.push("I need four more messages to write");
-    messages.push("three more messages to go");
-    messages.push("two more to do things and stuff");
-    messages.push("bro this dude got me like smh");
+    messages = new std::string[8];
+    head = 0;
+    enterMessage("hmm hum delete me");
+    enterMessage("I have to go to a meeting with the President at #8:30# tomorrow");
+    enterMessage("Yeah, it's confirmed #3:30#");
+    enterMessage("Okay wow yeah that's great");
+    enterMessage("Welp let's just drink so oat milk I guess");
+    enterMessage("Capitalism is in everything even those things with a good cause");
+    enterMessage("Is that a bad thing? Is it possible for an example of capitalism to be not bad?");
+    enterMessage("something something #communism#");
+    enterMessage("vote bernie 2020");
 }
 
 Level::~Level(){
@@ -65,17 +66,28 @@ void Level::handleInput(const int inputCode){
 
 void Level::enterMessage(std::string message){
 
-    messages.push(message);
+    messages[head] = message;
+    head++;
+
+    if(head >= NO_MESSAGES){
+
+        head -= NO_MESSAGES;
+    }
 }
 
 std::string Level::getMessages(int index){
 
-    return messages.at(index);
+    int indexToUse = index + head;
+    if(indexToUse >= NO_MESSAGES){
+
+        indexToUse -= NO_MESSAGES;
+    }
+    return messages[indexToUse];
 }
 
 int Level::getNoMessages(){
 
-    return messages.size();
+    return NO_MESSAGES;
 }
 
 void Level::loadMap(const int *prebuilt, const int w, const int h){

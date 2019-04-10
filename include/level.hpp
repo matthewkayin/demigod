@@ -6,10 +6,8 @@
 #define LEVEL_H
 
 #include "entity.hpp"
-#include "raqueue.hpp"
 #include <iostream>
 #include <string>
-#include <queue>
 
 class Level{
 
@@ -45,7 +43,9 @@ private:
     int mapWidth;
     int mapHeight;
 
-    Raqueue messages;
+    std::string *messages;
+    int head;
+    const int NO_MESSAGES = 8;
 
     Entity player;
     const int dummy[30] = {1, 1, 1, 1, 1, 1,
