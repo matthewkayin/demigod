@@ -154,7 +154,7 @@ void Engine::fillRect(int x, int y, int width, int height){
     SDL_RenderFillRect(renderer, &rect);
 }
 
-void Engine::renderTexture(std::string key, int x, int y, int sx, int sy, int sw, int sh){
+void Engine::renderTexture(std::string key, int x, int y){
 
     //srcsRect is the portion of the image to take from
     //dstRect is what to draw on the screen
@@ -170,10 +170,10 @@ void Engine::renderTexture(std::string key, int x, int y, int sx, int sy, int sw
         if(textureKeys[i] == key){
 
             toDraw = textures[i].getImage();
-            srcsRect.x = sx;
-            srcsRect.y = sy;
-            srcsRect.w = sw;
-            srcsRect.h = sh;
+            srcsRect.x = 0;
+            srcsRect.y = 0;
+            srcsRect.w = 32;
+            srcsRect.h = 32;
             dstRect.x = x;
             dstRect.y = y;
             dstRect.w = srcsRect.w;
@@ -190,7 +190,7 @@ void Engine::renderTexture(std::string key, int x, int y, int sx, int sy, int sw
     SDL_RenderCopy(renderer, toDraw, &srcsRect, &dstRect);
 }
 
-void Engine::renderPart(std::string key, int index, int x, int y, int sx, int sy, int sw, int sh){
+void Engine::renderPart(std::string key, int index, int x, int y){
 
     SDL_Texture* toDraw = nullptr;
     SDL_Rect srcsRect;
@@ -202,17 +202,17 @@ void Engine::renderPart(std::string key, int index, int x, int y, int sx, int sy
 
             toDraw = textures[i].getImage();
             //This function assumes it's being used with a tilemap of 32x32 textures
-            int tsx = index % (textures[i].getWidth() / 32);
-            int tsy = (index - tsx) / (textures[i].getWidth() / 32);
+            int sx = index % (textures[i].getWidth() / 32);
+            int sy = (index - sx) / (textures[i].getWidth() / 32);
 
-            srcsRect.x = (tsx * 32) + sx;
-            srcsRect.y = (tsy * 32) + sy;
-            srcsRect.w = sw;
-            srcsRect.h = sh;
+            srcsRect.x = (sx * 32);
+            srcsRect.y = (sy * 32);
+            srcsRect.w = 32;
+            srcsRect.h = 32;
             dstRect.x = x;
             dstRect.y = y;
-            dstRect.w = sw;
-            dstRect.h = sh;
+            dstRect.w = srcsRect.w;
+            dstRect.h = srcsRect.h;
         }
     }
 
@@ -278,7 +278,12 @@ void Engine::renderText(std::string text, int x, int y, int size){
 
 void Engine::renderConsoleMessage(std::string message, int x, int y){
 
-    //algorithm idea for this - what if we just go character by character?
+    //Don't run the function if the string is empty (should only happen when console is initially empty)
+    if(message == ""){
+
+        return;
+    }
+
     //If there are no string rendering commands
     if(message.find("#") == std::string::npos){
 

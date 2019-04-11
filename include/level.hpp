@@ -30,6 +30,7 @@ public:
     int getNoMessages();
 
     void loadMap(const int *prebuilt, const int w, const int h); //loads a non-procedurally generated map
+    void generateMap(int nocellsw, int nocellsh);
 
     int getTile(int index) const;
     int getTile(int x, int y) const;

@@ -6,26 +6,12 @@ Level::Level(){
     mapWidth = -1;
     map = nullptr;
 
-    int dummy2[528];
-    for(int i = 0; i < 528; i++){
-
-        dummy2[i] = 0;
-    }
-
-    loadMap(dummy2, 33, 16);
+    generateMap(10, 6);
+    //loadMap(dummy2, 33, 16);
     player.setPos(2, 2);
     player.setImage("player");
     messages = new std::string[8];
     head = 0;
-    enterMessage("hmm hum delete me");
-    enterMessage("I have to go to a meeting with the President at #8:30# tomorrow");
-    enterMessage("Yeah, it's confirmed #3:30#");
-    enterMessage("Okay wow yeah that's great");
-    enterMessage("Welp let's just drink so oat milk I guess");
-    enterMessage("Capitalism is in everything even those things with a good cause");
-    enterMessage("Is that a bad thing? Is it possible for an example of capitalism to be not bad?");
-    enterMessage("something something #communism#");
-    enterMessage("vote bernie 2020");
 }
 
 Level::~Level(){
@@ -105,6 +91,31 @@ void Level::loadMap(const int *prebuilt, const int w, const int h){
     for(int i = 0; i < w*h; i++){
 
          map[i] = prebuilt[i];
+    }
+}
+
+void Level::generateMap(int nocellsw, int nocellsh){
+
+    const int CELL_W = 7;
+    const int CELL_H = 7;
+    mapWidth = nocellsw * CELL_W;
+    mapHeight = nocellsh * CELL_H;
+    map = new int[mapWidth * mapHeight];
+
+    for(int i = 0; i < mapWidth; i++){
+
+        for(int j = 0; j < mapHeight; j++){
+
+            int index = (j * mapWidth) + i;
+            if(i % CELL_W == 0 || (i + 1) % CELL_W == 0 || j % CELL_H == 0 || (j + 1) % CELL_H == 0){
+
+                map[index] = 0;
+
+            }else{
+
+                map[index] = 1;
+            }
+        }
     }
 }
 

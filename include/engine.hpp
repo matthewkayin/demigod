@@ -48,8 +48,8 @@ public:
     void drawRect(int x, int y, int width, int height, int thickness); //draw a rectangle with a specified thickness
     void fillRect(int x, int y, int width, int height); //draw a filled rectangle
     //In the rendering functions, sx/sy/sw/sh are the x/y/width/height of the source rectangle for rendering part of the image when it's only partially in frame
-    void renderTexture(std::string key, int x, int y, int sx, int sy, int sw, int sh); //draw the texture associated with the given key
-    void renderPart(std::string key, int index, int x, int y, int sx, int sy, int sw, int sh); //draw a sub-image of a texture
+    void renderTexture(std::string key, int x, int y); //draw the texture associated with the given key
+    void renderPart(std::string key, int index, int x, int y); //draw a sub-image of a texture
     void renderText(std::string text, int x, int y, int size); //draw the string in the font associated with the given key. If x and y are -1, center horizontally or vertically
     void renderConsoleMessage(std::string message, int x, int y);
 

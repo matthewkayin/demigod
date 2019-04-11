@@ -25,10 +25,16 @@ int gamestate = 0;
 bool renderFPS = true;
 
 //variables for when we're rendering only onto specific frames of the UI
-const int MAIN_FRAME_X = 24;
-const int MAIN_FRAME_Y = 28;
-const int MAIN_FRAME_W = 1032 - 4;
-const int MAIN_FRAME_H = 500 - 4;
+//The frame variables are for the UI functions use, the main frame vars are for the rendering functions use (texture/entity rendering etc.)
+const int FRAME_X = 20;
+const int FRAME_Y = 15;
+const int FRAME_W = 1028;
+const int FRAME_H = 516;
+const int FRAME_THICKNESS = 4;
+const int MAIN_FRAME_X = FRAME_X + FRAME_THICKNESS;
+const int MAIN_FRAME_Y = FRAME_Y + FRAME_THICKNESS;
+const int MAIN_FRAME_W = FRAME_W - FRAME_THICKNESS;
+const int MAIN_FRAME_H = FRAME_H - FRAME_THICKNESS;
 
 //key locks so that events only happen once per keypress
 const int noKeys = 10;
@@ -244,7 +250,7 @@ void render(){
     }else if(gamestate == GAME){
 
         renderLevel();
-        //renderEntity(level.getPlayer());
+        renderEntity(level.getPlayer());
         renderGameUI();
     }
 
@@ -267,54 +273,35 @@ void renderLevel(){
             int tileY = j * 32;
 
             //Check if the tile is out of bounds
-            if(tileX <= -32 || tileX >= MAIN_FRAME_W || tileY <= -32 || tileY >= MAIN_FRAME_H){
+            if(tileX < 0 || tileX >= MAIN_FRAME_W || tileY < 0 || tileY >= MAIN_FRAME_H){
 
                 continue; //tile is out of bounds, so don't render and just go to the next tile
             }
 
-            int sx = 0;
-            int sy = 0;
-            int sw = 32;
-            int sh = 32;
-
-            //If the tile is slightly behind the left edge
-            if(tileX < 0){
-
-                sx = -1 * tileX; //draw the tile starting from only the right most visible of the pixels
-                sw = 32 - sx;
-
-            //If the tile is partially over the right edge
-            }else if(tileX + 32 > MAIN_FRAME_W){
-
-                sw = 32 - ((tileX + 32) - MAIN_FRAME_W);
-                std::cout << sw << std::endl;
-            }
-            //Do the same thing for y
-            if(tileY < 0){
-
-                sy = -1 * tileY;
-                sh = 32 - sy;
-
-            }else if(tileY + 32 > MAIN_FRAME_H){
-
-                sh = 32 - ((tileY + 32) - MAIN_FRAME_H);
-            }
-            engine.renderPart("tileset", level.getTile(i, j), MAIN_FRAME_X + tileX, MAIN_FRAME_Y + tileY, sx, sy, sw, sh);
+            engine.renderPart("tileset", level.getTile(i, j), MAIN_FRAME_X + tileX, MAIN_FRAME_Y + tileY);
         }
     }
 }
 
 void renderEntity(Entity e){
 
-    //engine.renderTexture(e.getImage(), e.getX() * 32, e.getY() * 32);
+    int entityX = e.getX() * 32;
+    int entityY = e.getY() * 32;
+
+    if(entityX < 0 || entityX >= MAIN_FRAME_W || entityY < 0 || entityY >= MAIN_FRAME_H){
+
+        return;
+    }
+
+    engine.renderTexture(e.getImage(), MAIN_FRAME_X + (e.getX() * 32), MAIN_FRAME_Y + (e.getY() * 32));
 }
 
 void renderGameUI(){
 
     engine.setRenderDrawColor(255, 255, 255);
-    engine.drawRect(20, 24, 1032, 500, 4);
-    engine.drawRect(20, 560, 1032, 140, 4);
-    engine.renderText("Player", 20, 530, 25);
+    engine.drawRect(FRAME_X, FRAME_Y, FRAME_W, FRAME_H, FRAME_THICKNESS);
+    engine.drawRect(FRAME_X, FRAME_Y + FRAME_H + FRAME_THICKNESS + 32, FRAME_W, 140,  FRAME_THICKNESS);
+    engine.renderText("Player", FRAME_X + FRAME_THICKNESS, FRAME_Y + FRAME_H + FRAME_THICKNESS + 5, 25);
     for(int i = 0; i < level.getNoMessages(); i++){
 
         engine.renderConsoleMessage(level.getMessages(i), 26, 568 + (i * 16));
