@@ -154,7 +154,7 @@ void Engine::fillRect(int x, int y, int width, int height){
     SDL_RenderFillRect(renderer, &rect);
 }
 
-void Engine::renderTexture(std::string key, int x, int y){
+void Engine::renderTexture(std::string key, int x, int y, int sx, int sy, int sw, int sh){
 
     //srcsRect is the portion of the image to take from
     //dstRect is what to draw on the screen
@@ -170,10 +170,10 @@ void Engine::renderTexture(std::string key, int x, int y){
         if(textureKeys[i] == key){
 
             toDraw = textures[i].getImage();
-            srcsRect.x = 0;
-            srcsRect.y = 0;
-            srcsRect.w = textures[i].getWidth();
-            srcsRect.h = textures[i].getHeight();
+            srcsRect.x = sx;
+            srcsRect.y = sy;
+            srcsRect.w = sw;
+            srcsRect.h = sh;
             dstRect.x = x;
             dstRect.y = y;
             dstRect.w = srcsRect.w;
@@ -190,7 +190,7 @@ void Engine::renderTexture(std::string key, int x, int y){
     SDL_RenderCopy(renderer, toDraw, &srcsRect, &dstRect);
 }
 
-void Engine::renderPart(std::string key, int index, int x, int y){
+void Engine::renderPart(std::string key, int index, int x, int y, int sx, int sy, int sw, int sh){
 
     SDL_Texture* toDraw = nullptr;
     SDL_Rect srcsRect;
@@ -202,17 +202,17 @@ void Engine::renderPart(std::string key, int index, int x, int y){
 
             toDraw = textures[i].getImage();
             //This function assumes it's being used with a tilemap of 32x32 textures
-            int sx = index % (textures[i].getWidth() / 32);
-            int sy = (index - sx) / (textures[i].getWidth() / 32);
+            int tsx = index % (textures[i].getWidth() / 32);
+            int tsy = (index - tsx) / (textures[i].getWidth() / 32);
 
-            srcsRect.x = (sx * 32);
-            srcsRect.y = (sy * 32);
-            srcsRect.w = 32;
-            srcsRect.h = 32;
+            srcsRect.x = (tsx * 32) + sx;
+            srcsRect.y = (tsy * 32) + sy;
+            srcsRect.w = sw;
+            srcsRect.h = sh;
             dstRect.x = x;
             dstRect.y = y;
-            dstRect.w = 32;
-            dstRect.h = 32;
+            dstRect.w = sw;
+            dstRect.h = sh;
         }
     }
 

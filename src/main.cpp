@@ -27,6 +27,8 @@ bool renderFPS = true;
 //variables for when we're rendering only onto specific frames of the UI
 const int MAIN_FRAME_X = 24;
 const int MAIN_FRAME_Y = 28;
+const int MAIN_FRAME_W = 1032 - 4;
+const int MAIN_FRAME_H = 500 - 4;
 
 //key locks so that events only happen once per keypress
 const int noKeys = 10;
@@ -261,15 +263,50 @@ void renderLevel(){
 
         for(int j = 0; j < level.getMapHeight(); j++){
 
-            //TODO, make it so that if tile is going past the width/height of the main frame that we only render part of it
-            engine.renderPart("tileset", level.getTile(i, j), MAIN_FRAME_X + (i * 32), MAIN_FRAME_Y + (j * 32));
+            int tileX = i * 32;
+            int tileY = j * 32;
+
+            //Check if the tile is out of bounds
+            if(tileX <= -32 || tileX >= MAIN_FRAME_W || tileY <= -32 || tileY >= MAIN_FRAME_H){
+
+                continue; //tile is out of bounds, so don't render and just go to the next tile
+            }
+
+            int sx = 0;
+            int sy = 0;
+            int sw = 32;
+            int sh = 32;
+
+            //If the tile is slightly behind the left edge
+            if(tileX < 0){
+
+                sx = -1 * tileX; //draw the tile starting from only the right most visible of the pixels
+                sw = 32 - sx;
+
+            //If the tile is partially over the right edge
+            }else if(tileX + 32 > MAIN_FRAME_W){
+
+                sw = 32 - ((tileX + 32) - MAIN_FRAME_W);
+                std::cout << sw << std::endl;
+            }
+            //Do the same thing for y
+            if(tileY < 0){
+
+                sy = -1 * tileY;
+                sh = 32 - sy;
+
+            }else if(tileY + 32 > MAIN_FRAME_H){
+
+                sh = 32 - ((tileY + 32) - MAIN_FRAME_H);
+            }
+            engine.renderPart("tileset", level.getTile(i, j), MAIN_FRAME_X + tileX, MAIN_FRAME_Y + tileY, sx, sy, sw, sh);
         }
     }
 }
 
 void renderEntity(Entity e){
 
-    engine.renderTexture(e.getImage(), e.getX() * 32, e.getY() * 32);
+    //engine.renderTexture(e.getImage(), e.getX() * 32, e.getY() * 32);
 }
 
 void renderGameUI(){

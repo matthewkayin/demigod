@@ -6,7 +6,13 @@ Level::Level(){
     mapWidth = -1;
     map = nullptr;
 
-    loadMap(dummy, 6, 5);
+    int dummy2[528];
+    for(int i = 0; i < 528; i++){
+
+        dummy2[i] = 0;
+    }
+
+    loadMap(dummy2, 33, 16);
     player.setPos(2, 2);
     player.setImage("player");
     messages = new std::string[8];
