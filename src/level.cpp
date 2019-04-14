@@ -12,6 +12,15 @@ Level::Level(){
     player.setImage("player");
     messages = new std::string[8];
     head = 0;
+
+    enterMessage("Goodbye, world");
+    enterMessage("Hello from planet #zarpadon#");
+    enterMessage("I like to drink lots of water");
+    enterMessage("Especially after I drink lots of #coffee#");
+    enterMessage("We are going to build a wall. And it's gonna be yuge");
+    enterMessage("The top one tenth of the top one percent of billionaires and billionaires");
+    enterMessage("Can you sex?");
+    enterMessage("Help the beautiful bearded man find it again.");
 }
 
 Level::~Level(){

@@ -278,6 +278,7 @@ void Engine::renderText(std::string text, int x, int y, int size){
 
 void Engine::renderConsoleMessage(std::string message, int x, int y){
 
+    //TODO make console message be faded if it's old
     //Don't run the function if the string is empty (should only happen when console is initially empty)
     if(message == ""){
 
