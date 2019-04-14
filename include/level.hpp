@@ -6,6 +6,7 @@
 #define LEVEL_H
 
 #include "entity.hpp"
+#include "globals.hpp"
 #include <iostream>
 #include <string>
 
@@ -29,6 +30,8 @@ public:
     std::string getMessages(int index);
     int getNoMessages();
 
+    void update(int lastMove);
+
     void loadMap(const int *prebuilt, const int w, const int h); //loads a non-procedurally generated map
     void generateMap(int nocellsw, int nocellsh);
 
@@ -37,6 +40,9 @@ public:
     int getNoTiles() const;
     int getMapWidth() const;
     int getMapHeight() const;
+
+    int getOffsetX() const;
+    int getOffsetY() const;
 
     Entity getPlayer() const;
 private:
@@ -47,6 +53,9 @@ private:
     std::string *messages;
     int head;
     const int NO_MESSAGES = 8;
+
+    int offsetx = 0;
+    int offsety = 0;
 
     Entity player;
     const int dummy[30] = {1, 1, 1, 1, 1, 1,

@@ -3,6 +3,7 @@
 
 #include "engine.hpp"
 #include "level.hpp"
+#include "globals.hpp"
 
 void initGame();
 
@@ -35,19 +36,6 @@ const unsigned int FRAME_TIME = SECOND / TARGET_FPS;
 int fps = 0;
 Gamestate gamestate = MENU_TITLE;
 bool renderFPS = true;
-
-//variables for when we're rendering only onto specific frames of the UI
-//the FRAME variables describe where we render the UI section
-const int FRAME_X = 20;
-const int FRAME_Y = 15;
-const int FRAME_W = 1028;
-const int FRAME_H = 516;
-const int FRAME_THICKNESS = 4;
-//the CANVAS variables describe where we're allowed to render inside the frame
-const int CANVAS_X = FRAME_X + FRAME_THICKNESS;
-const int CANVAS_Y = FRAME_Y + FRAME_THICKNESS;
-const int CANVAS_W = FRAME_W - FRAME_THICKNESS;
-const int CANVAS_H = FRAME_H - FRAME_THICKNESS;
 
 //key locks so that events only happen once per keypress
 //The keylock and keycode arrays are parallel, for example keyLock[0] is the lock for keyCode[0], which is F11
@@ -299,8 +287,8 @@ void renderLevel(){
 
         for(int j = 0; j < level.getMapHeight(); j++){
 
-            int tileX = i * 32;
-            int tileY = j * 32;
+            int tileX = (i - level.getOffsetX()) * 32;
+            int tileY = (j - level.getOffsetY()) * 32;
 
             //If tile is out of bounds, continue to next tile
             if(tileX < 0 || tileX >= CANVAS_W || tileY < 0 || tileY >= CANVAS_H){
@@ -315,8 +303,8 @@ void renderLevel(){
 
 void renderEntity(Entity e){
 
-    int entityX = e.getX() * 32;
-    int entityY = e.getY() * 32;
+    int entityX = (e.getX() - level.getOffsetX()) * 32;
+    int entityY = (e.getY() - level.getOffsetY()) * 32;
 
     //If tile is out of bounds, exit function
     if(entityX < 0 || entityX >= CANVAS_W || entityY < 0 || entityY >= CANVAS_H){
@@ -324,7 +312,7 @@ void renderEntity(Entity e){
         return;
     }
 
-    engine.renderTexture(e.getImage(), CANVAS_X + (e.getX() * 32), CANVAS_Y + (e.getY() * 32));
+    engine.renderTexture(e.getImage(), CANVAS_X + entityX, CANVAS_Y + entityY);
 }
 
 void renderGameUI(){

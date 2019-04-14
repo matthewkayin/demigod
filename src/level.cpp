@@ -31,27 +31,32 @@ Level::~Level(){
 void Level::handleInput(const int inputCode){
 
     bool invokesPlayerTurn = false;
+    int lastMove = -1;
 
     switch(inputCode){
 
         case UP:
             player.incY(-1);
             invokesPlayerTurn = true;
+            lastMove = 1;
             break;
 
         case RIGHT:
             player.incX(1);
             invokesPlayerTurn = true;
+            lastMove = 2;
             break;
 
         case DOWN:
             player.incY(1);
             invokesPlayerTurn = true;
+            lastMove = 3;
             break;
 
         case LEFT:
             player.incX(-1);
             invokesPlayerTurn = true;
+            lastMove = 4;
             break;
 
         default:
@@ -61,7 +66,7 @@ void Level::handleInput(const int inputCode){
 
     if(invokesPlayerTurn){
 
-        //update()
+        update(lastMove);
     }
 }
 
@@ -89,6 +94,26 @@ std::string Level::getMessages(int index){
 int Level::getNoMessages(){
 
     return NO_MESSAGES;
+}
+
+void Level::update(int lastMove){
+
+    if(lastMove == 4 && offsetx != 0 && player.getX() - offsetx < CANVAS_TILE_W * 0.25){
+
+        offsetx--;
+
+    }else if(lastMove == 2 && offsetx != mapWidth - CANVAS_TILE_W && player.getX() - offsetx > CANVAS_TILE_W * 0.75){
+
+        offsetx++;
+
+    }else if(lastMove == 1 && offsety != 0 && player.getY() - offsety < CANVAS_TILE_H * 0.25){
+
+        offsety--;
+
+    }else if(lastMove == 3 && offsety != mapHeight - CANVAS_TILE_H && player.getY() - offsety > CANVAS_TILE_H * 0.75){
+
+        offsety++;
+    }
 }
 
 void Level::loadMap(const int *prebuilt, const int w, const int h){
@@ -159,6 +184,16 @@ int Level::getMapWidth() const{
 int Level::getMapHeight() const{
 
     return mapHeight;
+}
+
+int Level::getOffsetX() const{
+
+    return offsetx;
+}
+
+int Level::getOffsetY() const{
+
+    return offsety;
 }
 
 Entity Level::getPlayer() const{
