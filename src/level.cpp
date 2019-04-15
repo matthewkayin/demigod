@@ -11,7 +11,13 @@ Level::Level(){
     player.setPos(2, 2);
     player.setImage("player");
     messages = new std::string[8];
+    messageFades = new int[8];
     head = 0;
+
+    for(int i = 0; i < NO_MESSAGES; i++){
+
+        messageFades[i] = -1;
+    }
 
     enterMessage("Goodbye, world");
     enterMessage("Hello from planet #zarpadon#");
@@ -21,6 +27,11 @@ Level::Level(){
     enterMessage("The top one tenth of the top one percent of billionaires and billionaires");
     enterMessage("Can you sex?");
     enterMessage("Help the beautiful bearded man find it again.");
+
+    for(int i = 0; i < NO_MESSAGES; i++){
+
+        messageFades[i] = 1;
+    }
 }
 
 Level::~Level(){
@@ -39,24 +50,28 @@ void Level::handleInput(const int inputCode){
             player.incY(-1);
             invokesPlayerTurn = true;
             lastMove = 1;
+            enterMessage("wow you moved #up#");
             break;
 
         case RIGHT:
             player.incX(1);
             invokesPlayerTurn = true;
             lastMove = 2;
+            enterMessage("okay you moved to the #right#");
             break;
 
         case DOWN:
             player.incY(1);
             invokesPlayerTurn = true;
             lastMove = 3;
+            enterMessage("yes that is the #down# key well done");
             break;
 
         case LEFT:
             player.incX(-1);
             invokesPlayerTurn = true;
             lastMove = 4;
+            enterMessage("you moved #left# it's the best direction");
             break;
 
         default:
@@ -73,6 +88,7 @@ void Level::handleInput(const int inputCode){
 void Level::enterMessage(std::string message){
 
     messages[head] = message;
+    messageFades[head] = 0;
     head++;
 
     if(head >= NO_MESSAGES){
@@ -91,12 +107,47 @@ std::string Level::getMessages(int index){
     return messages[indexToUse];
 }
 
+int Level::getMessageFade(int index){
+
+    int indexToUse = index + head;
+    if(indexToUse >= NO_MESSAGES){
+
+        indexToUse -= NO_MESSAGES;
+    }
+    return messageFades[indexToUse];
+}
+
 int Level::getNoMessages(){
 
     return NO_MESSAGES;
 }
 
 void Level::update(int lastMove){
+
+    //Update console message fade levels
+    bool emptyMessages = false;
+    for(int i = 0; i < NO_MESSAGES; i++){
+
+        if(messageFades[i] == 0){
+
+            messageFades[i] = 1;
+
+        }else if(messageFades[i] == 1){
+
+            messageFades[i] = 2;
+
+        }else if(messageFades[i] == -1){
+
+            emptyMessages = true;
+        }
+    }
+    if(!emptyMessages){
+
+        messageFades[head] = 4;
+        messageFades[head + 1] = 3;
+    }
+
+    //Update map offset based on player movement
 
     if(lastMove == 4 && offsetx != 0 && player.getX() - offsetx < CANVAS_TILE_W * 0.25){
 

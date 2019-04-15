@@ -51,7 +51,7 @@ public:
     void renderTexture(std::string key, int x, int y); //draw the texture associated with the given key
     void renderPart(std::string key, int index, int x, int y); //draw a sub-image of a texture
     void renderText(std::string text, int x, int y, int size); //draw the string in the font associated with the given key. If x and y are -1, center horizontally or vertically
-    void renderConsoleMessage(std::string message, int x, int y);
+    void renderConsoleMessage(std::string message, int x, int y, int fade);
 
     int getScreenWidth() const;
     int getScreenHeight() const;

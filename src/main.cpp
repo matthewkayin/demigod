@@ -325,6 +325,6 @@ void renderGameUI(){
     //draw console box messages
     for(int i = 0; i < level.getNoMessages(); i++){
 
-        engine.renderConsoleMessage(level.getMessages(i), FRAME_X + FRAME_THICKNESS + 5, FRAME_Y + FRAME_H + FRAME_THICKNESS + 40 + (i * 16));
+        engine.renderConsoleMessage(level.getMessages(i), FRAME_X + FRAME_THICKNESS + 5, FRAME_Y + FRAME_H + FRAME_THICKNESS + 40 + (i * 16), level.getMessageFade(i));
     }
 }

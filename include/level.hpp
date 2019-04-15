@@ -28,6 +28,7 @@ public:
     void handleInput(const int inputCode);
     void enterMessage(std::string message);
     std::string getMessages(int index);
+    int getMessageFade(int index);
     int getNoMessages();
 
     void update(int lastMove);
@@ -51,6 +52,7 @@ private:
     int mapHeight;
 
     std::string *messages;
+    int *messageFades;
     int head;
     const int NO_MESSAGES = 8;
 

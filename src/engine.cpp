@@ -276,19 +276,32 @@ void Engine::renderText(std::string text, int x, int y, int size){
     SDL_RenderCopy(renderer, toDraw.getImage(), &srcsRect, &dstRect);
 }
 
-void Engine::renderConsoleMessage(std::string message, int x, int y){
+void Engine::renderConsoleMessage(std::string message, int x, int y, int fade){
 
-    //TODO make console message be faded if it's old
     //Don't run the function if the string is empty (should only happen when console is initially empty)
     if(message == ""){
 
         return;
     }
 
+    double fadeFactor = 1;
+    if(fade == 2){
+
+        fadeFactor = 0.5;
+
+    }else if(fade == 3){
+
+        fadeFactor = 0.3;
+
+    }else if(fade == 4){
+
+        fadeFactor = 0.15;
+    }
+
     //If there are no string rendering commands
     if(message.find("#") == std::string::npos){
 
-        setRenderDrawColor(255, 255, 255);
+        setRenderDrawColor(255*fadeFactor, 255*fadeFactor, 255*fadeFactor);
         renderText(message, x, y, MESSAGE_SIZE);
 
     }else{
@@ -319,9 +332,9 @@ void Engine::renderConsoleMessage(std::string message, int x, int y){
             }
         }
 
-        setRenderDrawColor(255, 255, 255);
+        setRenderDrawColor(255*fadeFactor, 255*fadeFactor, 255*fadeFactor);
         renderText(white, x, y, MESSAGE_SIZE);
-        setRenderDrawColor(255, 0, 0);
+        setRenderDrawColor(255*fadeFactor, 0, 0);
         renderText(red, x, y, MESSAGE_SIZE);
     }
 }
