@@ -10,7 +10,6 @@ Menu
 Mapping
     -Procedurally generating maps
     -Make any static maps
-    -Make map offsets
 Enemies
     -Make enemies and the AI
     -Random enemy spawning
