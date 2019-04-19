@@ -55,32 +55,6 @@ bool Engine::init(std::string title, int width, int height){
         return false;
     }
 
-    if(!loadTextures()){
-
-        return false;
-    }
-
-    return true;
-}
-
-bool Engine::loadTextures(){
-
-    noTextures = 2;
-    textures = new Texture[noTextures];
-    textureKeys = new std::string[noTextures];
-
-    if(!textures[0].import(renderer, "res/gfx/player.png")){
-
-        return false;
-    }
-    textureKeys[0] = "player";
-
-    if(!textures[1].import(renderer, "res/gfx/tileset.png")){
-
-        return false;
-    }
-    textureKeys[1] = "tileset";
-
     return true;
 }
 
@@ -164,28 +138,35 @@ void Engine::renderTexture(std::string key, int x, int y){
     SDL_Rect srcsRect;
     SDL_Rect dstRect;
 
-    //Select a texture based on the given key, they're stored in parallel arrays
-    for(int i = 0; i < noTextures; i++){
+    //Select a texture based on the given key
+    unsigned int i = 0;
+    for(i = 0; i < textures.size(); i++){
 
         if(textureKeys[i] == key){
 
-            toDraw = textures[i].getImage();
-            srcsRect.x = 0;
-            srcsRect.y = 0;
-            srcsRect.w = 32;
-            srcsRect.h = 32;
-            dstRect.x = x;
-            dstRect.y = y;
-            dstRect.w = srcsRect.w;
-            dstRect.h = srcsRect.h;
+            toDraw = textures[i]->getImage();
+            break;
         }
     }
 
+    //If texture not found, that means we need to load it in for the first time (or it's a typo)
     if(toDraw == nullptr){
 
-        std::cout << "Failed to fetch texture! " << std::endl;
-        return;
+        Texture* newTexture = new Texture();
+        newTexture->import(renderer, "res/gfx/" + key + ".png");
+        textures.push_back(newTexture);
+        textureKeys.push_back(key);
+        toDraw = newTexture->getImage();
     }
+
+    srcsRect.x = 0;
+    srcsRect.y = 0;
+    srcsRect.w = 32;
+    srcsRect.h = 32;
+    dstRect.x = x;
+    dstRect.y = y;
+    dstRect.w = srcsRect.w;
+    dstRect.h = srcsRect.h;
 
     SDL_RenderCopy(renderer, toDraw, &srcsRect, &dstRect);
 }
@@ -196,31 +177,39 @@ void Engine::renderPart(std::string key, int index, int x, int y){
     SDL_Rect srcsRect;
     SDL_Rect dstRect;
 
-    for(int i = 0; i < noTextures; i++){
+    unsigned int i = 0;
+    for(i = 0; i < textures.size(); i++){
 
         if(textureKeys[i] == key){
 
-            toDraw = textures[i].getImage();
-            //This function assumes it's being used with a tilemap of 32x32 textures
-            int sx = index % (textures[i].getWidth() / 32);
-            int sy = (index - sx) / (textures[i].getWidth() / 32);
-
-            srcsRect.x = (sx * 32);
-            srcsRect.y = (sy * 32);
-            srcsRect.w = 32;
-            srcsRect.h = 32;
-            dstRect.x = x;
-            dstRect.y = y;
-            dstRect.w = srcsRect.w;
-            dstRect.h = srcsRect.h;
+            toDraw = textures[i]->getImage();
+            break;
         }
     }
 
+    //If texture not found, that means we need to load it in for the first time (or it's a typo)
     if(toDraw == nullptr){
 
-        std::cout << "Failed to fetch texture!" << std::endl;
-        return;
+        Texture* newTexture = new Texture();
+        newTexture->import(renderer, "res/gfx/" + key + ".png");
+        textures.push_back(newTexture);
+        textureKeys.push_back(key);
+        toDraw = newTexture->getImage();
     }
+
+    //This function assumes it's being used with a tilemap of 32x32 textures
+    //i should be the index of the correct texture regardless of if we find the texture in the for loop or not
+    int sx = index % (textures[i]->getWidth() / 32);
+    int sy = (index - sx) / (textures[i]->getWidth() / 32);
+
+    srcsRect.x = (sx * 32);
+    srcsRect.y = (sy * 32);
+    srcsRect.w = 32;
+    srcsRect.h = 32;
+    dstRect.x = x;
+    dstRect.y = y;
+    dstRect.w = srcsRect.w;
+    dstRect.h = srcsRect.h;
 
     SDL_RenderCopy(renderer, toDraw, &srcsRect, &dstRect);
 }
@@ -235,9 +224,9 @@ void Engine::renderText(std::string text, int x, int y, int size){
         //unsigned int in the for loop to prevent warnings when comparing to std::vector.size()
         for(unsigned int i = 0; i < fonts.size(); i++){
 
-            if(fontSizes.at(i) == size){
+            if(fontSizes[i] == size){
 
-                fontToUse = fonts.at(i);
+                fontToUse = fonts[i];
             }
         }
     }

@@ -10,6 +10,8 @@ Level::Level(){
     //loadMap(dummy2, 33, 16);
     player.setPos(2, 2);
     player.setImage("player");
+    enemy.setPos(10, 2);
+    enemy.setImage("enemy");
     messages = new std::string[8];
     messageFades = new int[8];
     head = 0;
@@ -250,4 +252,9 @@ int Level::getOffsetY() const{
 Entity Level::getPlayer() const{
 
     return player;
+}
+
+Entity Level::getEnemy() const{
+
+    return enemy;
 }

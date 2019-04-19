@@ -46,6 +46,7 @@ public:
     int getOffsetY() const;
 
     Entity getPlayer() const;
+    Entity getEnemy() const;
 private:
     int *map;
     int mapWidth;
@@ -60,6 +61,7 @@ private:
     int offsety = 0;
 
     Entity player;
+    Entity enemy;
     const int dummy[30] = {1, 1, 1, 1, 1, 1,
                          1, 0, 0, 0, 0, 1,
                          1, 0, 0, 0, 0, 1,

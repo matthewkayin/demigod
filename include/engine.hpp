@@ -37,7 +37,6 @@ public:
     Engine();
     ~Engine();
     bool init(std::string title, int width, int height); //Initializes SDL, returns false if unsuccessful
-    bool loadTextures();
     void toggleFullscreen();
 
     //Rendering functions
@@ -68,10 +67,8 @@ private:
     const int MESSAGE_SIZE = 16; //font size for console messages
     std::vector<TTF_Font*> fonts;
     std::vector<int> fontSizes;
-    int noFonts;
-    Texture* textures;
-    std::string* textureKeys;
-    int noTextures;
+    std::vector<Texture*> textures;
+    std::vector<std::string> textureKeys;
 };
 
 #endif

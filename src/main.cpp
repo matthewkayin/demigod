@@ -268,6 +268,7 @@ void render(){
 
         renderLevel();
         renderEntity(level.getPlayer());
+        renderEntity(level.getEnemy());
         renderGameUI();
     }
 
@@ -321,6 +322,9 @@ void renderGameUI(){
     engine.drawRect(FRAME_X, FRAME_Y, FRAME_W, FRAME_H, FRAME_THICKNESS); //draw main game frame
     engine.drawRect(FRAME_X, FRAME_Y + FRAME_H + FRAME_THICKNESS + 32, FRAME_W, 140,  FRAME_THICKNESS); //draw console frame
     engine.renderText("Player", FRAME_X + FRAME_THICKNESS, FRAME_Y + FRAME_H + FRAME_THICKNESS + 5, 25); //draw player name
+
+    //draw player stats
+    engine.renderText("Health " + std::to_string(level.getPlayer().getHealth()), FRAME_X + FRAME_THICKNESS + FRAME_W, 20, 16);
 
     //draw console box messages
     for(int i = 0; i < level.getNoMessages(); i++){
