@@ -267,8 +267,8 @@ void render(){
     }else if(gamestate == GAME){
 
         renderLevel();
-        renderEntity(level.getPlayer());
         renderEntity(level.getEnemy());
+        renderEntity(level.getPlayer());
         renderGameUI();
     }
 

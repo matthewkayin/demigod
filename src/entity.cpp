@@ -54,10 +54,25 @@ void Entity::takeDamage(const int h){
 
 std::string Entity::getImage() const{
 
+    if(health <= 0){
+
+        return "corpse";
+    }
+
     return image;
 }
 
 void Entity::setImage(const std::string key){
 
     image = key;
+}
+
+bool Entity::getCollision(int otherx, int othery){
+
+    return x == otherx && y == othery;
+}
+
+bool Entity::getCollision(Entity other){
+
+    return x == other.getX() && y == other.getY();
 }

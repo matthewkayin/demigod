@@ -9,6 +9,8 @@
 #include "globals.hpp"
 #include <iostream>
 #include <string>
+#include <cstdlib>
+#include <ctime>
 
 class Level{
 

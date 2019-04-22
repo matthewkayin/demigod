@@ -21,10 +21,13 @@ public:
 
     int getHealth() const;
     void setHealth(const int h);
-    void takeDamage(const int h); //health += h
+    void takeDamage(const int h); //health -= h
 
     std::string getImage() const; //return the image key associated with the entity
     void setImage(const std::string key);
+
+    bool getCollision(int otherx, int othery);
+    bool getCollision(Entity other);
 private:
     int x;
     int y;

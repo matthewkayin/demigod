@@ -2,6 +2,8 @@
 
 Level::Level(){
 
+    srand(time(NULL));
+
     mapHeight = -1;
     mapWidth = -1;
     map = nullptr;
@@ -10,8 +12,10 @@ Level::Level(){
     //loadMap(dummy2, 33, 16);
     player.setPos(2, 2);
     player.setImage("player");
+    player.setHealth(20);
     enemy.setPos(10, 2);
     enemy.setImage("enemy");
+    enemy.setHealth(10);
     messages = new std::string[8];
     messageFades = new int[8];
     head = 0;
@@ -19,20 +23,6 @@ Level::Level(){
     for(int i = 0; i < NO_MESSAGES; i++){
 
         messageFades[i] = -1;
-    }
-
-    enterMessage("Goodbye, world");
-    enterMessage("Hello from planet #zarpadon#");
-    enterMessage("I like to drink lots of water");
-    enterMessage("Especially after I drink lots of #coffee#");
-    enterMessage("We are going to build a wall. And it's gonna be yuge");
-    enterMessage("The top one tenth of the top one percent of billionaires and billionaires");
-    enterMessage("Can you sex?");
-    enterMessage("Help the beautiful bearded man find it again.");
-
-    for(int i = 0; i < NO_MESSAGES; i++){
-
-        messageFades[i] = 1;
     }
 }
 
@@ -52,28 +42,24 @@ void Level::handleInput(const int inputCode){
             player.incY(-1);
             invokesPlayerTurn = true;
             lastMove = 1;
-            enterMessage("wow you moved #up#");
             break;
 
         case RIGHT:
             player.incX(1);
             invokesPlayerTurn = true;
             lastMove = 2;
-            enterMessage("okay you moved to the #right#");
             break;
 
         case DOWN:
             player.incY(1);
             invokesPlayerTurn = true;
             lastMove = 3;
-            enterMessage("yes that is the #down# key well done");
             break;
 
         case LEFT:
             player.incX(-1);
             invokesPlayerTurn = true;
             lastMove = 4;
-            enterMessage("you moved #left# it's the best direction");
             break;
 
         default:
@@ -147,6 +133,35 @@ void Level::update(int lastMove){
 
         messageFades[head] = 4;
         messageFades[head + 1] = 3;
+    }
+
+    //If player move resulted in a collision, prevent the move from happening and have the player interact with the object
+    if(player.getCollision(enemy) && enemy.getHealth() > 0){
+
+        switch(lastMove){
+
+            case 1:
+                player.incY(1);
+                break;
+
+            case 2:
+                player.incX(-1);
+                break;
+
+            case 3:
+                player.incY(-1);
+                break;
+
+            case 4:
+                player.incX(1);
+                break;
+        }
+
+        int damage = rand() % 5 + 1;
+        enemy.takeDamage(damage);
+        enterMessage("You punched the demon, dealing #" + std::to_string(damage) + "# damage");
+
+        lastMove = -1;
     }
 
     //Update map offset based on player movement
